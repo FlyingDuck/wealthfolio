@@ -25,7 +25,7 @@
     },
     "macOS": {
       "bundleVersion": "20260301.1",
-      "signingIdentity": "Apple Distribution: Teymz Inc (DYDJ2RNL5H)",
+      "signingIdentity": "-",
       "minimumSystemVersion": "10.13"
     },
     "linux": {
