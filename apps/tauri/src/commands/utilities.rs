@@ -24,8 +24,6 @@ use wealthfolio_storage_sqlite::db;
 
 use crate::commands::portfolio::holdings_account_ids;
 use crate::context::ServiceContext;
-#[cfg(desktop)]
-use crate::updater::{check_for_update, install_update};
 
 const PENDING_EXPORTS_DIR: &str = "pending-exports";
 const PENDING_EXPORT_TTL: Duration = Duration::from_secs(60 * 60);
@@ -489,26 +487,19 @@ pub async fn get_app_info(app_handle: AppHandle) -> Result<AppInfo, String> {
     })
 }
 
-/// Check for updates and return update info if available.
+/// homefin: in-app updater removed — always reports up-to-date so the frontend
+/// stays untouched; updates come from upstream via git rebase + rebuild.
 #[tauri::command]
-pub async fn check_for_updates(app_handle: AppHandle) -> Result<Option<serde_json::Value>, String> {
-    #[cfg(desktop)]
-    {
-        let result = check_for_update(app_handle).await?;
-        Ok(result.map(|info| serde_json::to_value(info).unwrap()))
-    }
-    #[cfg(not(desktop))]
-    {
-        Ok(None)
-    }
+pub async fn check_for_updates(
+    _app_handle: AppHandle,
+) -> Result<Option<serde_json::Value>, String> {
+    Ok(None)
 }
 
-/// Download and install an available update. Emits progress events and restarts the app.
+/// homefin: in-app updater removed.
 #[tauri::command]
-pub async fn install_app_update(app_handle: AppHandle) -> Result<(), String> {
-    #[cfg(desktop)]
-    install_update(app_handle).await?;
-    Ok(())
+pub async fn install_app_update(_app_handle: AppHandle) -> Result<(), String> {
+    Err("In-app updates are disabled in this build.".to_string())
 }
 
 #[tauri::command]

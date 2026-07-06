@@ -13,8 +13,6 @@ mod services;
 
 #[cfg(desktop)]
 mod menu;
-#[cfg(desktop)]
-mod updater;
 
 use std::sync::Arc;
 
@@ -134,9 +132,8 @@ mod desktop {
     }
 
     /// Initializes desktop-specific plugins.
-    pub fn init_plugins(handle: &AppHandle) {
-        let _ = handle.plugin(tauri_plugin_updater::Builder::new().build());
-    }
+    /// homefin: in-app updater removed — updates come from upstream via git rebase + rebuild.
+    pub fn init_plugins(_handle: &AppHandle) {}
 
     /// Performs synchronous setup on desktop: initializes context, menu, and registers listeners.
     pub fn setup(handle: AppHandle, app_data_dir: &str) -> Result<(), Box<dyn std::error::Error>> {
@@ -393,11 +390,6 @@ pub fn run() {
                     log::LevelFilter::Debug
                 } else {
                     log::LevelFilter::Info
-                })
-                // Suppress verbose debug logs from the updater plugin
-                .filter(|metadata| {
-                    !metadata.target().starts_with("tauri_plugin_updater")
-                        || metadata.level() <= log::Level::Info
                 })
                 .build(),
         )
